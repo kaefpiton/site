@@ -4,20 +4,29 @@ namespace app\models;
 
 use Yii;
 use yii\base\Model;
+use app\models\Users;
 
 /**
  * LoginForm is the model behind the login form.
  *
- * @property-read User|null $user
+ * @property-read Users|null $user
  *
  */
 class LoginForm extends Model
 {
-    public $username;
+    public $email;
     public $password;
     public $rememberMe = true;
 
     private $_user = false;
+
+    public function attributeLabels()
+    {
+        return [
+            'email' =>'Введите свой email',
+            'password' =>'Введите свой пароль'
+        ];
+    }
 
 
     /**
@@ -25,13 +34,21 @@ class LoginForm extends Model
      */
     public function rules()
     {
+        define('EMAIL_NOT_EXIST', 'Пользователя с таким почтовым ящиком нет в системе!');
+
+        define('NOT_CORRECT_PASSWORD', 'Пользователя с таким почтовым ящиком нет в системе!');
+
+        define('EMPTY_MESSAGE', 'Данное поле не может быть пустым!');
+
         return [
-            // username and password are both required
-            [['username', 'password'], 'required'],
+
+            [['email', 'password'], 'required','message' => EMPTY_MESSAGE],
+            ['email', 'exist', 'targetClass' => '\app\models\Users', 'message' => EMAIL_NOT_EXIST],
             // rememberMe must be a boolean value
-            ['rememberMe', 'boolean'],
+            // ['rememberMe', 'boolean'],
+
             // password is validated by validatePassword()
-            ['password', 'validatePassword'],
+            ['password', 'validatePassword', 'message' => NOT_CORRECT_PASSWORD],
         ];
     }
 
@@ -48,7 +65,7 @@ class LoginForm extends Model
             $user = $this->getUser();
 
             if (!$user || !$user->validatePassword($this->password)) {
-                $this->addError($attribute, 'Incorrect username or password.');
+                $this->addError($attribute, 'Почта и пароль пользователя не совпадают!');
             }
         }
     }
@@ -66,14 +83,14 @@ class LoginForm extends Model
     }
 
     /**
-     * Finds user by [[username]]
+     * Finds user by [[email]]
      *
-     * @return User|null
+     * @return Users|null
      */
     public function getUser()
     {
         if ($this->_user === false) {
-            $this->_user = User::findByUsername($this->username);
+            $this->_user = Users::findByEmail($this->email);
         }
 
         return $this->_user;

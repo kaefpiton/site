@@ -21,12 +21,13 @@ $config = [
             'class' => 'yii\caching\FileCache',
         ],
         'user' => [
-            'identityClass' => 'app\models\User',
+            'identityClass' => 'app\models\Users',
             'enableAutoLogin' => true,
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
+
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
             'viewPath' => '@common/mail',
@@ -55,9 +56,26 @@ $config = [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
+            'enableStrictParsing' => true,
             'rules' => [
-                '<action:about|contact|login|feedback|data>' => 'site/<action>'
+                '/' => 'site/index',
+                'add' => 'site/add',
+                '<action:about|contact|feedback|data|addAdmin>' => 'site/<action>',
+                'login' => 'uauth/login',
+                'signup' => 'uauth/signup',
+                'logout' => 'uauth/logout',
+
+                'creation'=>'article/creation',
             ]
+        ],
+
+        'authManager' => [
+            'class' => 'yii\rbac\DbManager',
+            'itemTable'       => 'auth_item',
+            'itemChildTable'  => 'auth_item_child',
+            'assignmentTable' => 'auth_assignment',
+            'ruleTable'       => 'auth_rule',
+            'defaultRoles'    => ['guest'],
         ],
 
     ],

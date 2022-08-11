@@ -34,8 +34,7 @@ class FeedbackForm extends ActiveRecord
      */
     public function attributeLabels()
     {
-        return [
-        ];
+        return [];
     }
 
 }
