@@ -7,8 +7,8 @@ use app\assets\AppAsset;
 use app\widgets\Alert;
 use yii\bootstrap4\Breadcrumbs;
 use yii\bootstrap4\Html;
-use yii\bootstrap4\Nav;
-use yii\bootstrap4\NavBar;
+//use yii\bootstrap4\Nav;
+//use yii\bootstrap4\NavBar;
 
 AppAsset::register($this);
 
@@ -66,19 +66,40 @@ AppAsset::register($this);
         <nav id="nav">
             <ul>
                 <!--
-                TODO: заменить на виджет навигации
+                TODO: если можно, то заменить на вызов функций, где будет разделяться навигация гостя и пользователя
                 <li class="current"><a href="#">Latest Post</a></li>
                 <li><a href="#">Archives</a></li>
                 -->
                 <li>
                     <?= Html::a('Главная', ['/'], ['class' => 'profile-link']) ?>
                 </li>
+                <?php
+                if(!Yii::$app->user->isGuest){
+                    echo '<li>';
+                    echo Html::a('Создать статью', ['article/creation'], ['class' => 'profile-link']);
+                    echo '</li>';
+                }
+                ?>
                 <li>
                     <?= Html::a('О сайте', ['/about'], ['class' => 'profile-link']) ?>
                 </li>
                 <li>
-                    <?= Html::a('Обратная связь', ['feedback'], ['class' => 'profile-link']) ?>
+                    <?= Html::a('Обратная связь', ['/feedback'], ['class' => 'profile-link']) ?>
                 </li>
+
+                <?php
+                    if(!Yii::$app->user->isGuest){
+                        echo '<li>';
+                        echo Html::a('Выйти', ['uauth/logout'], ['class' => 'profile-link']);
+                        echo '</li>';
+                    }else{
+                        echo '<li>';
+                        echo Html::a('Войти', ['uauth/login'], ['class' => 'profile-link']);
+                        echo '</li>';
+                    }
+                ?>
+
+
             </ul>
         </nav>
 

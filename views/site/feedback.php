@@ -20,7 +20,7 @@ $model = new FeedbackForm();
         [
             'method' => 'post',
             'action' => ['/feedback'],
-        //'id' => 'form1',
+            //'id' => 'form1',
         ]
 
 );

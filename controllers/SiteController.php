@@ -13,6 +13,8 @@ use app\models\LoginForm;
 use app\models\ContactForm;
 use app\widgets\Alert;
 
+use app\models\Users;
+
 class SiteController extends Controller
 {
     /**
@@ -126,7 +128,13 @@ class SiteController extends Controller
      */
     public function actionAbout()
     {
+
+        var_dump(Yii::$app->user->isGuest);
+        /*
+        $user = new Users();
+        $user->getByEmail("first@mail.ru");
         return $this->render('about');
+        */
     }
 
     /**
@@ -156,5 +164,20 @@ class SiteController extends Controller
         ]);
     }
 
+    /*
+     * public function actionAdd() {
+
+        $model = Users::find()->where(['username' => 'admin'])->one();
+        if (empty($model)) {
+            $user = new Users();
+            $user->username = 'admin';
+            $user->email = 'admin@yoursite.ru';
+            $user->setPassword('admin');
+            $user->generateAuthKey();
+            if ($user->save()) {
+                echo 'good';
+            }
+        }
+    }*/
 
 }
