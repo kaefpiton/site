@@ -56,6 +56,7 @@ class ArticleController extends Controller
     public function actionCreation()
     {
         return $this->render('creation');
+
     }
 
 
