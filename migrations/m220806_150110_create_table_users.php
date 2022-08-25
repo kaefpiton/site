@@ -30,44 +30,12 @@ class m220806_150110_create_table_users extends Migration
         ], $tableOptions);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    /*public function UpOLD()
-    {
-        $this->createTable("users",
-        [
-            'id'             =>   $this->primaryKey(12),
-            'username'       =>   $this->string(255),
-            'password_hash'  => $this->string()->notNull(),
-            'email'          =>   $this->string(255),
-            'status'         =>   $this->integer(3),
-            'auth_key'       =>   $this->string(255),
-            'date_of_registration'   =>   $this->date()
-        ]);
-
-    }*/
 
     /**
      * {@inheritdoc}
      */
-    public function Down()
-    {
-      $this->dropTable('users');
-    }
-
-    /*
-    // Use up()/down() to run migration code without a transaction.
-    public function up()
-    {
-
-    }
-
     public function down()
     {
-        echo "m220806_150110_create_table_users cannot be reverted.\n";
-
-        return false;
+        $this->dropTable('users');
     }
-    */
 }

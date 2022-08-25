@@ -5,16 +5,18 @@ use yii\db\Migration;
 class m220806_150245_create_table_posts extends Migration
 {
     // Use up()/down() to run migration code without a transaction.
-    public function Up()
+    public function up()
     {
         $this->createTable('posts',
-            ['id'                => $this->primaryKey(),
-            'title'             => $this->string(255),
-            'content'           => $this->string(255),
-
-            'users_id'           => $this->integer()->defaultValue(1),
-
-            'date_of_creation'  => $this->date()
+            ['id'                   => $this->primaryKey(),
+            'title'                 => $this->string(255),
+            'preview'               => $this->string(500),
+            'content'               => $this->string(10000),
+            'users_id'              => $this->integer()->defaultValue(1),
+            'image'                 => $this->string(255),
+            'date_of_creation'      => $this->dateTime(),
+            'created_at'            => $this->integer()->notNull(),
+            'updated_at'            => $this->integer()->notNull(),
         ]);
 
         $this->addForeignKey(
@@ -29,8 +31,8 @@ class m220806_150245_create_table_posts extends Migration
 
     }
 
-    public function Down()
+    public function down()
     {
-        $this->dropTable('post');
+        $this->dropTable('posts');
     }
 }

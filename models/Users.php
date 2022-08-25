@@ -26,7 +26,6 @@ class Users extends ActiveRecord implements IdentityInterface
     const STATUS_DELETED = 0;
     const STATUS_ACTIVE = 10;
 
-
     /**
      * @return string название таблицы, сопоставленной с этим ActiveRecord-классом.
      */
@@ -34,6 +33,12 @@ class Users extends ActiveRecord implements IdentityInterface
     {
         return '{{users}}';
     }
+
+    //to relate one post to many users
+    public function getPosts(){
+        return $this->hasMany(Posts::className(), ['users_id' => 'id']);
+    }
+
     public function behaviors()
     {
         return [

@@ -58,14 +58,23 @@ $config = [
             'showScriptName' => false,
             'enableStrictParsing' => true,
             'rules' => [
+                //роуты основной навигации
                 '/' => 'site/index',
                 'add' => 'site/add',
+                 //todo почистить роуты, но перед этим посмотеть основной контроллер
                 '<action:about|contact|feedback|data|addAdmin>' => 'site/<action>',
+                //роуты регистрации и авторизации пользоватлелей
                 'login' => 'uauth/login',
                 'signup' => 'uauth/signup',
                 'logout' => 'uauth/logout',
 
-                'creation'=>'article/creation',
+                //роуты  для работы с постами
+                'creation'=>'posts/creation',
+                'setImage' => 'posts/set-image',
+                //todo убрать, когда комитить
+                'ptest' => 'posts/ptest',
+                'show' => 'posts/show'
+
             ]
         ],
 

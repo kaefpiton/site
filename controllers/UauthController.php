@@ -80,7 +80,7 @@ class UauthController extends Controller
     {
         $model = new SignupForm();
 
-        if ($model->load(Yii::$app->request->post()) &&$model->validate()){
+        if ($model->load(Yii::$app->request->post()) && $model->validate()){
                 if ($user = $model->signup()) {
                     if (Yii::$app->getUser()->login($user)) {
                         return $this->goHome();

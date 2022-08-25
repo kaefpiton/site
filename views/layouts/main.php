@@ -76,7 +76,16 @@ AppAsset::register($this);
                 <?php
                 if(!Yii::$app->user->isGuest){
                     echo '<li>';
-                    echo Html::a('Создать статью', ['article/creation'], ['class' => 'profile-link']);
+                    echo Html::a('Создать статью', ['posts/creation'], ['class' => 'profile-link']);
+                    echo '</li>';
+
+                     //todo убрать при коммите
+                    echo '<li>';
+                    echo Html::a('Ptest', ['posts/ptest'], ['class' => 'profile-link']);
+                    echo '</li>';
+                    //todo тоже убрать при коммите
+                    echo '<li>';
+                    echo Html::a('Все статьи', ['posts/show'], ['class' => 'profile-link']);
                     echo '</li>';
                 }
                 ?>
