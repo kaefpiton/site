@@ -10,7 +10,6 @@ class m220806_150245_create_table_posts extends Migration
         $this->createTable('posts',
             ['id'                   => $this->primaryKey(),
             'title'                 => $this->string(255),
-            'preview'               => $this->string(500),
             'content'               => $this->string(10000),
             'users_id'              => $this->integer()->defaultValue(1),
             'image'                 => $this->string(255),

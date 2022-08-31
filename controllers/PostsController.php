@@ -8,6 +8,7 @@ use app\models\ImageUpload;
 use Yii;
 use app\models\Users;
 use yii\base\BaseObject;
+use yii\data\Pagination;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
@@ -105,11 +106,38 @@ class PostsController extends Controller
         // die("connect");
     }
 
+    //todo переименовать название контроллера
     public function actionShow()
     {
-        $model = Posts::find()->all();
+        define('POSTS_ON_PAGE', 5);
 
-        return $this->render("show",  ['model' => $model]);
+        $query = $this->getAllPosts();
+
+        $pages = new Pagination(['totalCount' => $query->count(),
+        'defaultPageSize' => POSTS_ON_PAGE,
+        ]);
+
+        $models = $query->offset($pages->offset)
+                  ->limit($pages->limit)
+                  ->all();
+
+        return $this->render('show', [
+               'models' => $models,
+               'pages' => $pages,
+        ]);
+
+    }
+
+
+
+
+
+    /**
+     * @return array All Posts
+     */
+    private function getAllPosts()
+    {
+        return Posts::find();
     }
 
 

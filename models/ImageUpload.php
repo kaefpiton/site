@@ -45,7 +45,7 @@ class ImageUpload extends Model
 
     //Удаляем изображение (например если картинка в базе поменялась, то и на серваке уже она не нужна)
     public function deleteCurrentImage($currentImage){
-        if (file_exists($this->getFolder()  . $currentImage)){
+        if ($this->fileExists($currentImage)){
             unlink($this->getFolder() . $currentImage);
         }
     }
@@ -55,5 +55,14 @@ class ImageUpload extends Model
         $filename = $this->generateFilename();
         $this->image->saveAs($this->getFolder() . $filename);
         return $filename;
+    }
+
+    //Проверка изображения на существованик
+    public function fileExists($currentImage){
+        if(!empty($currentImage) && $currentImage != null){
+            return file_exists($this->getFolder()  . $currentImage);
+        }else{
+            return false;
+        }
     }
 }

@@ -59,27 +59,11 @@ class CreatePostForm extends Model
 
         $post->title            = $this->title;
         $post->content          = $this->content;
-        $post->preview          = $this->getPreview($this->content);
         $post->image            = $this->image;
         $post->users_id         = $user_id;
         $post->date_of_creation = date('Y-m-d H:i:s');
 
         return  $post->save();
-    }
-
-
-    /**
-     * Get contents preview
-     * @return string short version of post content for preview
-     */
-    private function getPreview($content)
-    {
-        if (strlen($content) >= 500){
-            $preview = substr($content, 0,500);
-            return $preview . "...";
-        }else{
-            return $content;
-        }
     }
 
 }

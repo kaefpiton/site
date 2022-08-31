@@ -25,6 +25,7 @@ class AppAsset extends AssetBundle
         'css/skel.css',
         'css/style.css',
         'css/style-desktop.css',
+        'css/style-posts.css',
         'css/style-wide.css',
         'css/ie/v8.css',
     ];
