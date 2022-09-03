@@ -151,8 +151,7 @@ class SiteController extends Controller
 
             if($model->validate()){
                 $model->save();
-
-                Yii::$app->session->setFlash('success', 'Ваша форма былша отправлена');
+                Yii::$app->session->setFlash('success', 'Ваша форма была отправлена');
             }else{
                 Yii::$app->session->setFlash('error', 'Вы неккоректно ввели данные');
             }
