@@ -30,7 +30,7 @@ class AppAsset extends AssetBundle
         'css/ie/v8.css',
     ];
     public $js = [
-        'js/jquery.min.js',
+        //'js/jquery.min.js',
         'js/skel.min.js',
         'js/skel-layers.min.js',
         'js/init.js',

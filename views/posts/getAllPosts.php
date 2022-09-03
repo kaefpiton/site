@@ -1,8 +1,9 @@
 <?php
 use app\models\Posts;
 use yii\bootstrap4\LinkPager;
+use yii\helpers\Html;
 
-
+$this->title = 'Все публикации';
 ?>
 
 
@@ -18,17 +19,15 @@ use yii\bootstrap4\LinkPager;
 
                             <?php if ($model->image):?>
                             <div class="wp-block-img">
-                                <a href="#">
-                                    <?php echo '<img src="web/uploads/'.$model->image.'" alt="" width="250" height="200">' ?>
-                                </a>
+                                    <?php echo '<img src="web/uploads/'.$model->image.'" alt="" width="300" height="200">' ?>
                             </div>
                             <?php endif;?>
 
                             <div class="wp-block-content">
                                 <small>
                                     <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>Опубликовано: <?php echo getPostDate($model-> date_of_creation)?></small>
-                                <h4 class="content-title"><?php echo $model->title ?></h4>
-                                <p class="description"><?php echo getPostPreview($model->content) ?> </p>
+                                <h4 class="content-title"><?php echo getPostLink($model->title, $model->id); ?></h4>
+                                <p class="description"><?php echo getPostPreview($model->content,$model->id) ?> </p>
                                 <span class="pull-left">
                       <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
                     </span>
@@ -41,7 +40,7 @@ use yii\bootstrap4\LinkPager;
                         </div>
                         <div class="wp-block-footer">
                             <ul class="aux-info">
-                                <li><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> 365</li>
+                                <li><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> <?php echo "Глазик: " . $model->view_count ?> </li>
                                 <li><span class=" glyphicon glyphicon-comment" aria-hidden="true"></span> 5</li>
                                 <li><span class="glyphicon glyphicon-star" aria-hidden="true"></span> 2</li>
                                 <li><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> +5 <span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span></li>
@@ -68,22 +67,31 @@ use yii\bootstrap4\LinkPager;
 * Return post content in specific format
 * @return string post content
 */
-function getPostPreview($content){
+function getPostPreview($content, $post_id): string
+{
     if (strlen($content) >= 500){
-        $preview = substr($content, 0,500);
-        //todo вынести в функцию и добавить ссылку
-        $preview = $preview . "...читать далее";
+        $preview = formedPostPreview($content, $post_id);
     }else{
         $preview = $content;
     }
     return  $preview ;
+}
+/**
+ * Return short post preview
+ * @return string short post preview
+ */
+function formedPostPreview($content, $post_id): string
+{
+    $preview = substr($content, 0,500);
+    return $preview . "...".getPostLink("читать далее", $post_id);
 }
 
 /**
  * Return post date in specific format
  * @return string date of creation post
  */
-function getPostDate($date_of_creation){
+function getPostDate($date_of_creation): string
+{
     //format mysql datetime "Y-m-d H:i:s"
     $datetime = explode(" ", $date_of_creation);
     $date =  $datetime[0];
@@ -97,10 +105,20 @@ function getPostDate($date_of_creation){
 }
 
 /**
- * Display pagination
- * @return string date of creation post
+ * Return HTML link on concrete post
+ * @return string link on post
  */
-function displayPagination($pages){
+function getPostLink($text, $post_id): string
+{
+    $action = 'posts/get-post';
+    return Html::a($text, [$action, 'post_id' => $post_id], ['class' => 'profile-link']);
+}
+
+/**
+ * Display pagination
+ */
+function displayPagination($pages)
+{
      echo LinkPager::widget([
         'pagination' => $pages,
     ]);

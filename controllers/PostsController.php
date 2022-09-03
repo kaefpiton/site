@@ -60,20 +60,16 @@ class PostsController extends Controller
         ];
     }
 
-    public function actionCreation()
+    public function actionCreatePost()
     {
         $usr_id = Yii::$app->user->id;
         $model = new CreatePostForm();
-        $imageUploader = new ImageUpload();
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()){
 
-            if (UploadedFile::getInstance($model, 'image') != null){
-                $model->image = $imageUploader->uploadFile(UploadedFile::getInstance($model, 'image'), " ");
-            }
+            $this->uploadImage($model);
 
-
-            if($model->write($usr_id)){
+            if($model->createPost($usr_id)){
                 //todo do redirect
             }else{
                 //todo do handle error and log it!!!
@@ -88,13 +84,22 @@ class PostsController extends Controller
 
         }
 
-        return $this->render('creation',
+        return $this->render('createPost',
             [
                 'model'=>$model,
                 'error' => "Ошибка создания поста",
                 'user_id' => $user_id,
             ]);
     }
+    //todo возможно вынести в uploader или еще куда-то
+    private function uploadImage($model){
+        $imageUploader = new ImageUpload();
+
+        if (UploadedFile::getInstance($model, 'image') != null){
+            $model->image = $imageUploader->uploadFile(UploadedFile::getInstance($model, 'image'), " ");
+        }
+    }
+
 
     //todo подчистить
     public function actionPtest()
@@ -106,39 +111,49 @@ class PostsController extends Controller
         // die("connect");
     }
 
-    //todo переименовать название контроллера
-    public function actionShow()
+    public function actionGetAllPosts(): string
     {
         define('POSTS_ON_PAGE', 5);
 
-        $query = $this->getAllPosts();
+        $model = new Posts();
+        $query =  $model->getAllPosts();
+
+        //todo Решить и эту проблему
+        if (!$query){die("Пока нет никаких постов");}
 
         $pages = new Pagination(['totalCount' => $query->count(),
-        'defaultPageSize' => POSTS_ON_PAGE,
+                                'defaultPageSize' => POSTS_ON_PAGE,
         ]);
 
         $models = $query->offset($pages->offset)
                   ->limit($pages->limit)
                   ->all();
 
-        return $this->render('show', [
+        return $this->render('getAllPosts', [
                'models' => $models,
                'pages' => $pages,
         ]);
 
     }
 
-
-
-
-
-    /**
-     * @return array All Posts
-     */
-    private function getAllPosts()
+    public function actionGetPost($post_id): string
     {
-        return Posts::find();
+        $model = Posts::getPostById($post_id);
+
+        if (!$model){$this->actionPostNotFound();}
+
+        $model->updateCounters(['view_count' => 1]);
+
+        return $this->render('getPost', [
+            'model' => $model,
+        ]);
     }
 
+
+
+    //todo СДЕЛАТЬ НОРМАЛЬНО!
+    public function actionPostNotFound(){
+        die("POST NOT FOUND");
+    }
 
 }

@@ -49,11 +49,12 @@ class CreatePostForm extends Model
      *
      * @return bool save post or not
      */
-    public function write($user_id)
+    public function createPost($user_id)
     {
         if (!$this->validate()) {
             return null;
         }
+        define('DEFAULT_VIEW_COUNT', 0);
 
         $post = new Posts();
 
@@ -61,6 +62,7 @@ class CreatePostForm extends Model
         $post->content          = $this->content;
         $post->image            = $this->image;
         $post->users_id         = $user_id;
+        $post->view_count       = DEFAULT_VIEW_COUNT;
         $post->date_of_creation = date('Y-m-d H:i:s');
 
         return  $post->save();

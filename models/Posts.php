@@ -49,17 +49,16 @@ class Posts extends ActiveRecord
 
 
     public function getAllPosts(){
+        return Posts::find();
+    }
 
-
-        $rows = (new \yii\db\Query())
-            ->select(['*'])
-            ->from('posts')
-            ->all();
-
-        echo "<pre>";
-        var_dump($rows);
-        echo "</pre>";
-        die();
+    /**
+     * @return array concrete post by id
+     */
+    public static function getPostById($post_id){
+        return Posts::find()
+            ->where(['id' => $post_id])
+            ->one();
     }
 
 }

@@ -69,11 +69,12 @@ $config = [
                 'logout' => 'uauth/logout',
 
                 //роуты  для работы с постами
-                'creation'=>'posts/creation',
+                'CreatePost'=>'posts/create-post',
                 'setImage' => 'posts/set-image',
+                'GetPost'=>'posts/get-post',
                 //todo убрать, когда комитить
                 'ptest' => 'posts/ptest',
-                'show' => 'posts/show'
+                'GetAllPosts' => 'posts/get-all-posts'
 
             ]
         ],
