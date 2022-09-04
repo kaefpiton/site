@@ -44,7 +44,7 @@ $this->title = 'Все публикации';
                                 <li><span class=" glyphicon glyphicon-comment" aria-hidden="true"></span> 5</li>
                                 <li><span class="glyphicon glyphicon-star" aria-hidden="true"></span> 2</li>
                                 <li><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> +5 <span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span></li>
-                                <li><span class="glyphicon glyphicon-tags" aria-hidden="true"></span> Тег 1, Тег 2, Тег 3</li>
+                                <li><span class="glyphicon glyphicon-tags" aria-hidden="true"></span> Теги: <?php echo getPreviewTags($model) ?> </li>
                             </ul>
                         </div>
                     </div>
@@ -112,6 +112,48 @@ function getPostLink($text, $post_id): string
 {
     $action = 'posts/get-post';
     return Html::a($text, [$action, 'post_id' => $post_id], ['class' => 'profile-link']);
+}
+
+
+/**
+ * Return short version of tags in string format
+ * @return string of tags
+ */
+function getPreviewTags($model):string
+{
+    define('PREVIEW_TAGS_COUNT', 3);
+    $tagString = "";
+    $preview_counter = 0;
+
+    if(count($model->tags) > 0){
+
+        foreach ($model->tags as $tag){
+            if ($preview_counter == 0){
+                $tagString .= convertTagToLink($tag->tag_name);
+            }else{
+                $tagString .= ", ". convertTagToLink($tag->tag_name);
+            }
+            $preview_counter++;
+
+            if ($preview_counter > PREVIEW_TAGS_COUNT){
+                $count_of_others = count($model->tags) - PREVIEW_TAGS_COUNT;
+                $tagString .= " + еще ".  $count_of_others ;
+                break;
+            }
+        }
+
+    }else {
+        $tagString = "теги отсутствуют" . "</br>";
+    }
+
+    return $tagString;
+}
+
+//todo в разработке
+function convertTagToLink($tag){
+    $action = 'posts/get-post';
+    $post_id = 26;
+    return Html::a($tag, [$action, 'post_id' => $post_id], ['class' => 'profile-link']);
 }
 
 /**

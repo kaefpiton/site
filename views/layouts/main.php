@@ -108,7 +108,6 @@ AppAsset::register($this);
                     }
                 ?>
 
-
             </ul>
         </nav>
 
@@ -132,26 +131,13 @@ AppAsset::register($this);
         <!-- Recent Posts -->
         <section class="box recent-posts">
             <header>
-                <h2>Recent Posts</h2>
+                <h2>Прошлые посты (возможно убрать)</h2>
             </header>
             <ul>
-                <li><a href="#">Lorem ipsum dolor</a></li>
-                <li><a href="#">Feugiat nisl aliquam</a></li>
-                <li><a href="#">Sed dolore magna</a></li>
-                <li><a href="#">Malesuada commodo</a></li>
-                <li><a href="#">Ipsum metus nullam</a></li>
-            </ul>
-        </section>
+                <li><a href="#">Пост 1 </a></li>
+                <li><a href="#">Пост 2 </a></li>
+                <li><a href="#">Пост 3 <a</a></li>
 
-        <!-- Recent Comments -->
-        <section class="box recent-comments">
-            <header>
-                <h2>Recent Comments</h2>
-            </header>
-            <ul>
-                <li>case on <a href="#">Lorem ipsum dolor</a></li>
-                <li>molly on <a href="#">Sed dolore magna</a></li>
-                <li>case on <a href="#">Sed dolore magna</a></li>
             </ul>
         </section>
 
@@ -216,11 +202,6 @@ AppAsset::register($this);
                 </table>
             </div>
         </section>
-
-        <!-- Copyright -->
-        <ul id="copyright">
-            <li>&copy; Untitled.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
-        </ul>
 
     </div>
 
