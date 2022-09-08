@@ -7,6 +7,7 @@ use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 
 class Tags extends ActiveRecord{
+    use TagsRelations;
     /**
      * @return string название таблицы, сопоставленной с этим ActiveRecord-классом.
      */
@@ -15,33 +16,19 @@ class Tags extends ActiveRecord{
         return 'tags';
     }
 
-    //todo здесь могут быть траблы
     //to relate many posts to many tags
     public function  getPosts(){
-        return $this->hasMany(PostsTags::className(),['tag_id' => 'id'] );
+        return $this->hasMany(Posts::className(),['id' => 'post_id'] )
+            ->viaTable('posts_tags', ['tag_id' => 'id']);
     }
 
-    public function behaviors()
-    {
-        return [
-            TimestampBehavior::className(),
-        ];
-    }
 
     /**
-     * @return array the validation rules.
+     * return concrete tag by id
      */
-    public function rules()
+    public static function getTagById($tag_id)
     {
-        return [];
-    }
-
-    /**
-     * @return array customized attribute labels
-     */
-    public function attributeLabels()
-    {
-        return [];
+        return Tags::find()->where(['id' => $tag_id]);
     }
 
 }

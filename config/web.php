@@ -56,25 +56,12 @@ $config = [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
-            'enableStrictParsing' => true,
+
             'rules' => [
                 //роуты основной навигации
                 '/' => 'site/index',
-                'add' => 'site/add',
                  //todo почистить роуты, но перед этим посмотеть основной контроллер
                 '<action:about|contact|feedback|data|addAdmin>' => 'site/<action>',
-                //роуты регистрации и авторизации пользоватлелей
-                'login' => 'uauth/login',
-                'signup' => 'uauth/signup',
-                'logout' => 'uauth/logout',
-
-                //роуты  для работы с постами
-                'CreatePost'=>'posts/create-post',
-                'setImage' => 'posts/set-image',
-                'GetPost'=>'posts/get-post',
-                //todo убрать, когда комитить
-                'ptest' => 'posts/ptest',
-                'GetAllPosts' => 'posts/get-all-posts'
 
             ]
         ],

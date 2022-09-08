@@ -23,6 +23,8 @@ use yii\web\IdentityInterface;
  */
 class Users extends ActiveRecord implements IdentityInterface
 {
+    use UsersRelations;
+
     const STATUS_DELETED = 0;
     const STATUS_ACTIVE = 10;
 
@@ -34,10 +36,6 @@ class Users extends ActiveRecord implements IdentityInterface
         return '{{users}}';
     }
 
-    //to relate one post to many users
-    public function getPosts(){
-        return $this->hasMany(Posts::className(), ['users_id' => 'id']);
-    }
 
     public function behaviors()
     {
@@ -166,6 +164,11 @@ class Users extends ActiveRecord implements IdentityInterface
     }
 
 
+
+
+
+
+    //кастомные функции
     /**
      * find and return user by email
      *
@@ -182,6 +185,10 @@ class Users extends ActiveRecord implements IdentityInterface
 
         var_dump($rows);
         die();
+    }
+
+    public function getByID($id){
+        return Users::find()->where(['id' => $id])->one();
     }
 
 }

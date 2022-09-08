@@ -2,7 +2,7 @@
 
 namespace app\controllers;
 
-use app\models\CreatePostForm;
+
 use app\models\ImageUpload;
 use Yii;
 use app\models\Users;
@@ -62,7 +62,7 @@ class PostsController extends Controller
     public function actionCreatePost()
     {
         $usr_id = Yii::$app->user->id;
-        $model = new CreatePostForm();
+        $model = new Posts();
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()){
 
@@ -110,15 +110,24 @@ class PostsController extends Controller
         // die("connect");
     }
 
-    public function actionGetAllPosts(): string
+    public function actionGetAllPosts($tag = null, $user = null): string
     {
         define('POSTS_ON_PAGE', 5);
 
         $model = new Posts();
+
+        $pageTitle = 'Все публикации';
         $query =  $model->getAllPosts();
 
-        //todo Решить и эту проблему
-        if (!$query){die("Пока нет никаких постов");}
+        if ($tag){
+            $pageTitle = 'Публикации по тегу: '. $tag;
+            $query =  $model->getPostsByTag($tag);
+        }
+        if ($user){
+            $curUser = new Users();
+            $pageTitle = 'Публикации пользователя: '. $curUser->getByID($user)->username;
+            $query =  $model->getPostsByUser($user);
+        }
 
         $pages = new Pagination(['totalCount' => $query->count(),
                                 'defaultPageSize' => POSTS_ON_PAGE,
@@ -129,11 +138,13 @@ class PostsController extends Controller
                   ->all();
 
         return $this->render('getAllPosts', [
-               'models' => $models,
-               'pages' => $pages,
+                'pageTitle' => $pageTitle,
+                'models' => $models,
+                'pages' => $pages,
         ]);
 
     }
+
 
     public function actionGetPost($post_id): string
     {

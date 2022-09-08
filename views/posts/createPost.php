@@ -4,10 +4,9 @@
 use vova07\imperavi\Widget;
 use yii\helpers\Html;
 use yii\bootstrap4\ActiveForm;
-use app\models\CreatePostForm;
+use app\models\Posts;
 
 $this->title = 'Создание статьи';
-
 ?>
 
 <?php
@@ -15,10 +14,7 @@ $this->title = 'Создание статьи';
 if (empty($error)){
     Yii::$app->session->setFlash('error', 'Вы неккоректно ввели данные');
 }
-$form = ActiveForm::begin(['id' => 'form-signup',
-    'method' => 'post',
-    'action' => 'CreatePost'
-]);
+$form = ActiveForm::begin(['id' => 'form-signup',]);
 //todo аналогично как в форме logjn
 ?>
 <?= Html::tag('h1', "Создать статью") ?>

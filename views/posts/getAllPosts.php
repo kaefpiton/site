@@ -3,7 +3,7 @@ use app\models\Posts;
 use yii\bootstrap4\LinkPager;
 use yii\helpers\Html;
 
-$this->title = 'Все публикации';
+$this->title = $pageTitle;
 ?>
 
 
@@ -19,7 +19,7 @@ $this->title = 'Все публикации';
 
                             <?php if ($model->image):?>
                             <div class="wp-block-img">
-                                    <?php echo '<img src="web/uploads/'.$model->image.'" alt="" width="300" height="200">' ?>
+                                    <?php echo '<img src="../web/uploads/'.$model->image.'" alt="" width="300" height="200">' ?>
                             </div>
                             <?php endif;?>
 
@@ -33,7 +33,7 @@ $this->title = 'Все публикации';
                     </span>
                                 <span class="pull-right">
                       <span class="capacity">
-                        <i class="fa fa-user"></i> <?php echo $model->users->username ?>
+                        <i class="fa fa-user"></i> <?php echo getAuthorsPostsLink($model->users);?>
                       </span>
                     </span>
                             </div>
@@ -103,6 +103,17 @@ function getPostDate($date_of_creation): string
         return $date;
     }
 }
+
+/**
+ * Return HTML link on author's posts
+ * @return string link on post
+ */
+function getAuthorsPostsLink($user): string
+{
+    $action = 'posts/get-all-posts';
+    return Html::a($user->username, [$action, 'user' => $user->id], ['class' => 'profile-link']);
+}
+
 
 /**
  * Return HTML link on concrete post
