@@ -1,7 +1,10 @@
 <?php
 use app\models\Posts;
+use app\models\Comments;
 use yii\bootstrap4\LinkPager;
 use yii\helpers\Html;
+use yii\bootstrap4\ActiveForm;
+
 
 $this->title = $model->title ;
 
@@ -12,42 +15,75 @@ if($model->image){
 
 echo "Текст статьи: " .$model->content . '</br>';
 echo "Автор: ".$model->users->username . '</br>';
-echo "Дата: ".getPostDate($model->date_of_creation) . '</br>';
+echo "Дата публикации: ". $model->date_of_creation . '</br>';
 echo "Просмотры: " . $model->view_count . '</br>';
 
+
+displaySeparator();
+getComments($model);
+
+displaySeparator();
 getTags($model);
 
+?>
 
-//todo вынести так как уже повторяется
-function getPostDate($date_of_creation): string
-{
-    //format mysql datetime "Y-m-d H:i:s"
-    $datetime = explode(" ", $date_of_creation);
-    $date =  $datetime[0];
-    $time = new DateTime($datetime[1]);
+<?php
+$addComment = new Comments();
+$form = ActiveForm::begin(['id' => 'form-signup',
+                            'method' => 'post',
+                            'action' => "add-post-comment?post_id=".$model->id
+]);
+//todo переделать заголовок в нормальныый текст
+?>
+<?= Html::tag('h1', "Оставить комментарий") ?>
 
-    if ($date == date("Y-m-d") ){
-        return "Сегодня в ". $time->format('H:i');
-    }else{
-        return $date;
-    }
-}
+<?= $form->field($addComment, 'text')->textarea([1, "false"]) ?>
 
+    <div class="form-group">
+        <?= Html::submitButton('Отправить', ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>
+    </div>
+<?php ActiveForm::end(); ?>
+
+
+<?php
 function getTags($model)
 {
     if(count($model->tags) > 0){
         echo "Теги статьи:". "</br>";
         foreach ($model->tags as $tag){
-            echo convertTagToLink($tag) . "<br>";
+            echo convertTagToLink($tag->tag_name) . "<br>";
         }
     }else{
         echo "У данной статьи отсутствуют теги". "</br>";
     }
 }
 
+function getComments($model)
+{
+    if (count($model->comments) > 0){
+        echo "комментарии к статье:". "</br>";
+
+        foreach ($model->comments as $comment){
+            echo "Пользователь " . $comment->users->username. " комментирует:". "<br>";
+            echo  $comment->text . "<br>";
+            echo "Дата комментария: " . $comment->date_of_creation . '</br>';
+            echo "***********************************". '</br>';
+        }
+
+    }else{
+        echo "У данной статьи отсутствуют комментарии". "</br>";
+    }
+}
+
+
+
 function convertTagToLink($tag){
-    $action = 'posts/get-all-posts';
-    return Html::a($tag->tag_name, [$action, 'tag' => $tag->tag_name], ['class' => 'profile-link']);
+    $action = 'posts/get-posts';
+    return Html::a($tag, [$action, 'tag' => $tag], ['class' => 'profile-link']);
+}
+
+function displaySeparator(){
+    echo "*******************************=========================================*******************************************************". '</br>';
 }
 
 ?>

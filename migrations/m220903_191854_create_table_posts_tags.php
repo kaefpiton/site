@@ -10,7 +10,7 @@ class m220903_191854_create_table_posts_tags extends Migration
     /**
      * {@inheritdoc}
      */
-    public function safeUp()
+    public function up()
     {
         $this->createTable('{{%posts_tags}}', [
             'id'            => $this->primaryKey(12),
@@ -44,23 +44,9 @@ class m220903_191854_create_table_posts_tags extends Migration
     /**
      * {@inheritdoc}
      */
-    public function safeDown()
+    public function down()
     {
         $this->dropTable('posts_tags');
     }
 
-    /*
-    // Use up()/down() to run migration code without a transaction.
-    public function up()
-    {
-
-    }
-
-    public function down()
-    {
-        echo "m220903_191854_create_table_posts_tags cannot be reverted.\n";
-
-        return false;
-    }
-    */
 }

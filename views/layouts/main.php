@@ -57,9 +57,9 @@ AppAsset::register($this);
     <!-- Sidebar -->
     <div id="sidebar">
 
-        <!-- Logo -->
+        <!--Logo -->
         <h1 id="logo">
-            <?= Html::a('BLOG', ['/'], ['class' => 'profile-link']) ?>
+            <?= Html::a('BLOG', ['posts/get-posts'], ['class' => 'profile-link']) ?>
         </h1>
 
         <!-- Nav -->
@@ -85,7 +85,7 @@ AppAsset::register($this);
                     echo '</li>';
                     //todo тоже убрать при коммите
                     echo '<li>';
-                    echo Html::a('Все статьи', ['posts/get-all-posts'], ['class' => 'profile-link']);
+                    echo Html::a('Все статьи', ['posts/get-posts'], ['class' => 'profile-link']);
                     echo '</li>';
                 }
                 ?>

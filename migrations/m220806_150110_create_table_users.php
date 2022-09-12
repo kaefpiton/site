@@ -24,6 +24,7 @@ class m220806_150110_create_table_users extends Migration
             'password_reset_token' => $this->string()->unique(),
             'email' => $this->string()->notNull()->unique(),
             'status' => $this->smallInteger()->notNull()->defaultValue(10),
+
             'created_at' => $this->integer()->notNull(),
             'updated_at' => $this->integer()->notNull(),
 

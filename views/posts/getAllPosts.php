@@ -4,9 +4,8 @@ use yii\bootstrap4\LinkPager;
 use yii\helpers\Html;
 
 $this->title = $pageTitle;
+
 ?>
-
-
 
 <?php if (!empty($models)):?>
     <?php echo "Статьи по вашему запросу:";?>
@@ -25,7 +24,7 @@ $this->title = $pageTitle;
 
                             <div class="wp-block-content">
                                 <small>
-                                    <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>Опубликовано: <?php echo getPostDate($model-> date_of_creation)?></small>
+                                    <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>Опубликовано: <?php echo $model-> date_of_creation?></small>
                                 <h4 class="content-title"><?php echo getPostLink($model->title, $model->id); ?></h4>
                                 <p class="description"><?php echo getPostPreview($model->content,$model->id) ?> </p>
                                 <span class="pull-left">
@@ -41,7 +40,7 @@ $this->title = $pageTitle;
                         <div class="wp-block-footer">
                             <ul class="aux-info">
                                 <li><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> <?php echo "Глазик: " . $model->view_count ?> </li>
-                                <li><span class=" glyphicon glyphicon-comment" aria-hidden="true"></span> 5</li>
+                                <li><span class=" glyphicon glyphicon-comment" aria-hidden="true"></span> <?php echo "Комменты: " . count($model->comments) ?></li>
                                 <li><span class="glyphicon glyphicon-star" aria-hidden="true"></span> 2</li>
                                 <li><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> +5 <span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span></li>
                                 <li><span class="glyphicon glyphicon-tags" aria-hidden="true"></span> Теги: <?php echo getPreviewTags($model) ?> </li>
@@ -87,30 +86,12 @@ function formedPostPreview($content, $post_id): string
 }
 
 /**
- * Return post date in specific format
- * @return string date of creation post
- */
-function getPostDate($date_of_creation): string
-{
-    //format mysql datetime "Y-m-d H:i:s"
-    $datetime = explode(" ", $date_of_creation);
-    $date =  $datetime[0];
-    $time = new DateTime($datetime[1]);
-
-    if ($date == date("Y-m-d") ){
-        return "Сегодня в ". $time->format('H:i');
-    }else{
-        return $date;
-    }
-}
-
-/**
  * Return HTML link on author's posts
  * @return string link on post
  */
 function getAuthorsPostsLink($user): string
 {
-    $action = 'posts/get-all-posts';
+    $action = 'posts/get-posts';
     return Html::a($user->username, [$action, 'user' => $user->id], ['class' => 'profile-link']);
 }
 
@@ -142,7 +123,7 @@ function getPreviewTags($model):string
             if ($preview_counter == 0){
                 $tagString .= convertTagToLink($tag->tag_name);
             }else{
-                $tagString .= ", ". convertTagToLink($tag->tag_name);
+                $tagString .= " , ". convertTagToLink($tag->tag_name);
             }
             $preview_counter++;
 
@@ -160,11 +141,9 @@ function getPreviewTags($model):string
     return $tagString;
 }
 
-//todo в разработке
 function convertTagToLink($tag){
-    $action = 'posts/get-post';
-    $post_id = 26;
-    return Html::a($tag, [$action, 'post_id' => $post_id], ['class' => 'profile-link']);
+    $action = 'posts/get-posts';
+    return Html::a($tag, [$action, 'tag' => $tag], ['class' => 'profile-link']);
 }
 
 /**

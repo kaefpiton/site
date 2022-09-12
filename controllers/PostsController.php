@@ -3,7 +3,9 @@
 namespace app\controllers;
 
 
+use app\models\Comments;
 use app\models\ImageUpload;
+
 use Yii;
 use app\models\Users;
 use yii\base\BaseObject;
@@ -103,14 +105,14 @@ class PostsController extends Controller
     //todo подчистить
     public function actionPtest()
     {
-        $model = Posts::findOne(1);
-        //echo "<pre>";
-        //echo "</pre>";
-        // return $this->render("creation",  ['model' => $model]);
-        // die("connect");
+        $model = Posts::find()->where(['posts.id' => 67])->one();
+        foreach ($model->comments as $c){
+            var_dump($c->text);
+        }
+        die();
     }
 
-    public function actionGetAllPosts($tag = null, $user = null): string
+    public function actionGetPosts($tag = null, $user = null): string
     {
         define('POSTS_ON_PAGE', 5);
 
@@ -137,6 +139,7 @@ class PostsController extends Controller
                   ->limit($pages->limit)
                   ->all();
 
+        Posts::formatDate($models);
         return $this->render('getAllPosts', [
                 'pageTitle' => $pageTitle,
                 'models' => $models,
@@ -148,15 +151,36 @@ class PostsController extends Controller
 
     public function actionGetPost($post_id): string
     {
-        $model = Posts::getPostById($post_id);
+        $post   =  new Posts();
+        $model = $post->getPostById($post_id);
 
         if (!$model){$this->actionPostNotFound();}
 
         $model->updateCounters(['view_count' => 1]);
 
+        Posts::formatDate(array($model));
         return $this->render('getPost', [
             'model' => $model,
         ]);
+    }
+
+    public function actionAddPostComment($post_id)
+    {
+        $usr_id = Yii::$app->user->id;
+        $model = new Comments();
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+
+            if($model->createComment($usr_id,$post_id)){
+                return $this->redirect(['get-post?post_id='.$post_id]);
+            }else{
+                //todo do handle error and log it!!!
+            }
+
+        }else{
+            //todo handle
+            die("BAD REQUEST");
+        }
+
     }
 
 

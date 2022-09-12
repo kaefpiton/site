@@ -7,11 +7,25 @@ use yii\base\BaseObject;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 
-
+/**
+ * Posts model
+ *
+ * @property integer $id
+ * @property string $title
+ * @property string $content
+ * @property integer $users_id
+ * @property string $image
+ * @property string $date_of_creation
+ * @property string $view_count
+ *
+ * @property integer $created_at
+ * @property integer $updated_at
+ */
 
 class Posts extends ActiveRecord
 {
     use PostsRelations;
+    use PostsFormatter;
 
     /**
      * @return string название таблицы, сопоставленной с этим ActiveRecord-классом.
@@ -21,15 +35,12 @@ class Posts extends ActiveRecord
         return 'posts';
     }
 
-
-
     public function behaviors()
     {
         return [
             TimestampBehavior::className(),
         ];
     }
-
 
     public function attributeLabels()
     {
@@ -62,8 +73,11 @@ class Posts extends ActiveRecord
         ];
     }
 
+
+
+
     /**
-     * Save user's post in database
+     * create user's post
      *
      * @return bool save post or not
      */
@@ -83,8 +97,8 @@ class Posts extends ActiveRecord
         $post->view_count       = DEFAULT_VIEW_COUNT;
         $post->date_of_creation = date('Y-m-d H:i:s');
 
-        $post->created_at       = null;
-        $post->updated_at       = null;
+        $post->created_at       = 1;
+        $post->updated_at       = 1;
 
 
         return  $post->save();
@@ -92,25 +106,24 @@ class Posts extends ActiveRecord
 
 
 
-
-
-
+    //SELECTS
     public function getAllPosts(){
         return Posts::find()->orderBy(["date_of_creation" => SORT_DESC]);
     }
 
     /**
-     * @return array concrete post by id
+     * concrete post by id
      */
-    public static function getPostById($post_id){
-        return Posts::find()->where(['id' => $post_id])->one();
+    public function getPostById($post_id)
+    {
+        return Posts::find()->where(["id"=>$post_id])->one();
     }
-
 
     /**
      * return all posts by tag name
      */
     public function getPostsByTag($tag_name){
+
         return Posts::find()
             ->joinWith('tags')
             ->where(['tags.tag_name' => $tag_name]);
@@ -124,5 +137,8 @@ class Posts extends ActiveRecord
             ->joinWith('users')
             ->where(['users.id' => $id]);
     }
+
+
+
 
 }

@@ -15,6 +15,7 @@ class m220806_150245_create_table_posts extends Migration
             'image'                 => $this->string(255),
             'date_of_creation'      => $this->dateTime(),
             'view_count'            => $this->integer()->defaultValue(0),
+
             'created_at'            => $this->integer()->notNull(),
             'updated_at'            => $this->integer()->notNull(),
         ]);

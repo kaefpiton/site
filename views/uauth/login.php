@@ -16,7 +16,6 @@ $this->title = 'Вход';
                                 'method' => 'post',
                                 'action' => "login"
     ]);
-    //todo переделать заголовок в нормальныый текст
 ?>
 <?= Html::tag('h1', "Форма авторизации") ?>
 
@@ -25,9 +24,6 @@ $this->title = 'Вход';
     <div class="form-group">
         <?= Html::submitButton('Войти', ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>
     </div>
-
-
-
 <?php ActiveForm::end(); ?>
 
 <?php
