@@ -45,6 +45,7 @@ class PostsController extends Controller
             ],
         ];
     }
+
     /**
      * {@inheritdoc}
      */
@@ -66,32 +67,30 @@ class PostsController extends Controller
         $usr_id = Yii::$app->user->id;
         $model = new Posts();
 
-        if ($model->load(Yii::$app->request->post()) && $model->validate()){
-
+        if ($model->load(Yii::$app->request->post()) && $model->validate([])){
             $this->uploadImage($model);
-
             if($model->createPost($usr_id)){
-                //todo do redirect
-            }else{
-                //todo do handle error and log it!!!
-
-                /* return $this->render('creation',
+                return $this->render('createPost',
+                    [
+                        'model'=>$model,
+                        'status'=> "success",
+                    ]);
+            }
+            else{
+                 return $this->render('createPost',
                     [
                         'model'=> $model,
-                        'error' => "Ошибка создания поста",
-                        'user_id' => $user_id,
-                    ]);*/
+                        'status' => "error",
+                    ]);
             }
-
         }
-
         return $this->render('createPost',
             [
-                'model'=>$model,
-                'error' => "Ошибка создания поста",
-                'user_id' => $user_id,
+                'model'=> $model,
+                'status' => "creating",
             ]);
     }
+
     //todo возможно вынести в uploader или еще куда-то
     private function uploadImage($model){
         $imageUploader = new ImageUpload();
@@ -105,14 +104,10 @@ class PostsController extends Controller
     //todo подчистить
     public function actionPtest()
     {
-        $model = Posts::find()->where(['posts.id' => 67])->one();
-        foreach ($model->comments as $c){
-            var_dump($c->text);
-        }
-        die();
+        die("Отправляем почту");
     }
 
-    public function actionGetPosts($tag = null, $user = null): string
+    public function actionGetPosts($tag = null, $user = null, $title=null): string
     {
         define('POSTS_ON_PAGE', 5);
 
@@ -130,6 +125,13 @@ class PostsController extends Controller
             $pageTitle = 'Публикации пользователя: '. $curUser->getByID($user)->username;
             $query =  $model->getPostsByUser($user);
         }
+
+        //todo спросить, норм или нет
+        if ($model->load(Yii::$app->request->post())) {
+            $pageTitle = 'Поиск статьи по заголовку: '. $model->title;
+            $query =  $model->getPostsByName($model->title);
+        }
+
 
         $pages = new Pagination(['totalCount' => $query->count(),
                                 'defaultPageSize' => POSTS_ON_PAGE,
@@ -154,13 +156,19 @@ class PostsController extends Controller
         $post   =  new Posts();
         $model = $post->getPostById($post_id);
 
-        if (!$model){$this->actionPostNotFound();}
+        if (!$model){
+            return $this->render('getPost', [
+                'model' => $model,
+                'status' => 'error'
+            ]);
+        }
 
         $model->updateCounters(['view_count' => 1]);
 
         Posts::formatDate(array($model));
         return $this->render('getPost', [
             'model' => $model,
+            'status' => 'success'
         ]);
     }
 
@@ -168,16 +176,14 @@ class PostsController extends Controller
     {
         $usr_id = Yii::$app->user->id;
         $model = new Comments();
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+        if ($model->load(Yii::$app->request->post()) && $model->validate('text')) {
 
             if($model->createComment($usr_id,$post_id)){
                 return $this->redirect(['get-post?post_id='.$post_id]);
-            }else{
-                //todo do handle error and log it!!!
             }
 
         }else{
-            //todo handle
+            //todo вывести страницу с ошибкой
             die("BAD REQUEST");
         }
 

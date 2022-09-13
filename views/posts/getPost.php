@@ -1,48 +1,61 @@
 <?php
+
 use app\models\Posts;
 use app\models\Comments;
 use yii\bootstrap4\LinkPager;
+use yii\captcha\Captcha;
 use yii\helpers\Html;
 use yii\bootstrap4\ActiveForm;
 
-
 $this->title = $model->title ;
 
-echo "Название статьи:" . $model->title . '</br>';
-if($model->image){
-    echo '<img src="../web/uploads/'.$model->image.'" alt="" width="450" height="400">' . '</br>';
-}
+if($status != 'error'){
 
-echo "Текст статьи: " .$model->content . '</br>';
-echo "Автор: ".$model->users->username . '</br>';
-echo "Дата публикации: ". $model->date_of_creation . '</br>';
-echo "Просмотры: " . $model->view_count . '</br>';
+    echo "Название статьи:" . $model->title . '</br>';
+    if($model->image){
+        echo '<img src="../web/uploads/'.$model->image.'" alt="" width="450" height="400">' . '</br>';
+    }
+
+    echo "Текст статьи: " .$model->content . '</br>';
+    echo "Автор: ".$model->users->username . '</br>';
+    echo "Дата публикации: ". $model->date_of_creation . '</br>';
+    echo "Просмотры: " . $model->view_count . '</br>';
 
 
-displaySeparator();
-getComments($model);
+    displaySeparator();
+    getComments($model);
 
-displaySeparator();
-getTags($model);
+    displaySeparator();
+    getTags($model);
 
-?>
+    $addComment = new Comments();
+
+    $form = ActiveForm::begin(['id' => 'form-signup',
+                                'method' => 'post',
+                                'action' => "add-post-comment?post_id=".$model->id
+    ]);?>
+
+    <?= Html::tag('h1', "Оставить комментарий") ?>
+
+    <?= $form->field($addComment, 'text')->textarea([1, "false"]) ?>
+
+
+    <?= $form->field($model, 'verifyCode')->widget(Captcha::classname(), [
+        // configure additional widget properties here
+    ]) ?>
+
+        <div class="form-group">
+            <?= Html::submitButton('Отправить', ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>
+        </div>
+    <?php ActiveForm::end(); ?>
 
 <?php
-$addComment = new Comments();
-$form = ActiveForm::begin(['id' => 'form-signup',
-                            'method' => 'post',
-                            'action' => "add-post-comment?post_id=".$model->id
-]);
-//todo переделать заголовок в нормальныый текст
+}else{
+    echo "Данная статья отсутствует на сайте";
+}
 ?>
-<?= Html::tag('h1', "Оставить комментарий") ?>
 
-<?= $form->field($addComment, 'text')->textarea([1, "false"]) ?>
 
-    <div class="form-group">
-        <?= Html::submitButton('Отправить', ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>
-    </div>
-<?php ActiveForm::end(); ?>
 
 
 <?php

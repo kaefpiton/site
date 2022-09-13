@@ -14,13 +14,17 @@ class SignupForm extends Model
     public $username;
     public $email;
     public $password;
+    public $confirmPassword;
+    public $verifyCode;
 
     public function attributeLabels()
     {
         return [
             'username' =>'Имя',
             'email' =>'E-mail',
-            'password' =>'Пароль'
+            'password' =>'Пароль',
+            'confirmPassword' => 'Подтвердить пароль',
+            'verifyCode' => 'Введите символы с картинки'
         ];
     }
 
@@ -34,12 +38,16 @@ class SignupForm extends Model
         define('TOOSHORT_USERNAME', 'Имя пользователя не может быть меньше 2х символов!');
 
         define('TAKEN_EMAIL', 'Пользователь с таким email уже существует!');
+        define('NOT_EMAIL', 'Вы заполнили почтовый ящик некорректно!');
 
         define('TOOSHORT_PASSWORD', 'Пароль не может быть меньше 6 символов!');
 
         define('EMPTY_MESSAGE', 'Данное поле не может быть пустым!');
         define('TOOLONG_FIELD', 'Данное поле не может быть больше 255 символов!');
 
+        define('PWDS_DISMATCHED', 'Ваши введенные пароли не совпадают!');
+
+        define('NOT_CAPTCHA', 'Вы ввели неверно симфолы с картинки! Пожалуйста, повторите ввод');
 
         return [
             ['username', 'trim'],
@@ -49,12 +57,17 @@ class SignupForm extends Model
 
             ['email', 'trim'],
             ['email', 'required', 'message' => EMPTY_MESSAGE],
-            ['email', 'email','message' => EMPTY_MESSAGE],
+            ['email', 'email','message' => NOT_EMAIL],
             ['email', 'string', 'max' => 255, 'tooLong' => TOOLONG_FIELD],
             ['email', 'unique', 'targetClass' => '\app\models\Users', 'message' => TAKEN_EMAIL],
 
             ['password', 'required','message' => EMPTY_MESSAGE],
             ['password', 'string', 'min' => 6,'tooShort' => TOOSHORT_PASSWORD],
+
+            ['confirmPassword', 'required', 'message' => EMPTY_MESSAGE],
+            ['confirmPassword', 'compare', 'compareAttribute'=>'password', 'message' => PWDS_DISMATCHED],
+
+            ['verifyCode', 'captcha','message' => NOT_CAPTCHA],
         ];
     }
 
@@ -65,8 +78,7 @@ class SignupForm extends Model
      */
     public function signup()
     {
-
-        if (!$this->validate()) {
+        if (!$this->validate(['username', 'email', 'password'])) {
             return null;
         }
 
@@ -76,7 +88,7 @@ class SignupForm extends Model
         $user->setPassword($this->password);
         $user->generateAuthKey();
         $user->created_at = date('Y-m-d');
-        $user->updated_at = date('Y/m/d');
+        $user->updated_at = date('Y-m-d');
 
         if($user->save()){
             //todo возможно добаить if на проверку присвоения роли

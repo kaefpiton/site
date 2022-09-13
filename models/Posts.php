@@ -27,6 +27,8 @@ class Posts extends ActiveRecord
     use PostsRelations;
     use PostsFormatter;
 
+    public $verifyCode;
+
     /**
      * @return string название таблицы, сопоставленной с этим ActiveRecord-классом.
      */
@@ -48,6 +50,7 @@ class Posts extends ActiveRecord
             'title' =>'Введите название статьи',
             'content' =>'Введите текст статьи',
             'image' => 'Загрузите изображение к статье',
+            'verifyCode' => 'Введите символы с картинки'
         ];
     }
 
@@ -61,6 +64,8 @@ class Posts extends ActiveRecord
 
         define('EMPTY_MESSAGE', 'Данное поле не может быть пустым!');
 
+        define('NOT_CAPTCHA', 'Вы ввели неверно симфолы с картинки! Пожалуйста, повторите ввод');
+
         return [
             ['title', 'trim'],
             ['title', 'required','message' => EMPTY_MESSAGE],
@@ -70,6 +75,8 @@ class Posts extends ActiveRecord
             ['content', 'trim'],
             ['content', 'required','message' => EMPTY_MESSAGE],
             ['content', 'string', 'min' => 100, 'max' => 9999, 'tooShort' => TOOSHORT_CONTENT,'tooLong' => TOOLONG_CONTENT],
+
+            ['verifyCode', 'captcha','message' => NOT_CAPTCHA],
         ];
     }
 
@@ -83,7 +90,7 @@ class Posts extends ActiveRecord
      */
     public function createPost($user_id)
     {
-        if (!$this->validate()) {
+        if (!$this->validate(['title', 'content'])) {
             return null;
         }
         define('DEFAULT_VIEW_COUNT', 0);
@@ -101,7 +108,10 @@ class Posts extends ActiveRecord
         $post->updated_at       = 1;
 
 
-        return  $post->save();
+        return  $post->save(true, ['title', 'content','image',
+                                                'users_id', 'view_count','date_of_creation',
+                                                    'created_at','updated_at'
+                                                ]);
     }
 
 
@@ -127,8 +137,8 @@ class Posts extends ActiveRecord
         return Posts::find()
             ->joinWith('tags')
             ->where(['tags.tag_name' => $tag_name]);
-    }
 
+    }
     /**
      * return all posts by user id
      */
@@ -138,6 +148,11 @@ class Posts extends ActiveRecord
             ->where(['users.id' => $id]);
     }
 
+    public function getPostsByName($name){
+        return Posts::find()
+            ->where('title LIKE :substr', array(':substr' => '%'.$name.'%'))
+            ->orderBy(["date_of_creation" => SORT_DESC]);
+    }
 
 
 

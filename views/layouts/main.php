@@ -4,9 +4,12 @@
 /** @var string $content */
 
 use app\assets\AppAsset;
+use app\models\Posts;
 use app\widgets\Alert;
+use yii\bootstrap4\ActiveForm;
 use yii\bootstrap4\Breadcrumbs;
 use yii\bootstrap4\Html;
+use app\models\SearchPost;
 //use yii\bootstrap4\Nav;
 //use yii\bootstrap4\NavBar;
 
@@ -112,11 +115,29 @@ AppAsset::register($this);
         </nav>
 
         <!-- Search -->
+        <?php
+        $model = new Posts();
+        $form = ActiveForm::begin(['id' => 'form-signup',
+            'method' => 'post',
+            'action' => '/posts/get-posts',
+            'enableClientValidation' => false
+        ]);
+        ?>
+        <?= $form->field($model, 'title')->textInput(['autofocus' => true])->label(false) ?>
+
+
+        <div class="form-group">
+            <?= Html::submitButton('Искать', ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>
+        </div>
+        <?php ActiveForm::end(); ?>
+
+
+        <!-- old search
         <section class="box search">
             <form method="post" action="#">
                 <input type="text" class="text" name="search" placeholder="Search" />
             </form>
-        </section>
+        </section>-->
 
         <!-- Text -->
         <section class="box text-style1">

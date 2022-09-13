@@ -24,7 +24,8 @@ use yii\behaviors\TimestampBehavior;
 class Comments extends ActiveRecord{
     use CommentsRelations;
 
-    public $tmp = "0";
+    public $verifyCode;
+
     /**
      * @return string название таблицы, сопоставленной с этим ActiveRecord-классом.
      */
@@ -44,6 +45,7 @@ class Comments extends ActiveRecord{
     {
         return [
             'text' =>'Введите свой комментарий',
+            'verifyCode' => 'Введите символы с картинки'
         ];
     }
 
@@ -52,11 +54,14 @@ class Comments extends ActiveRecord{
     {
         define('TOOLONG_COMMENT', 'Ваш комментарий превышает 1000 символов! Пожалуйста, сократите ваш комментарий!');
         define('EMPTY_MESSAGE', 'Комментарий не может быть пустым!');
+        define('NOT_CAPTCHA', 'Вы ввели неверно симфолы с картинки! Пожалуйста, повторите ввод');
 
         return [
             ['text', 'trim'],
             ['text', 'required','message' => EMPTY_MESSAGE],
             ['text', 'string', 'max' => 1000, 'tooLong' => TOOLONG_COMMENT],
+
+            ['verifyCode', 'captcha','message' => NOT_CAPTCHA],
         ];
     }
 
@@ -67,7 +72,8 @@ class Comments extends ActiveRecord{
      */
     public function createComment($users_id, $post_id)
     {
-        if (!$this->validate()) {
+        if (!$this->validate('text')) {
+            die("Proverochka");
             return null;
         }
 
@@ -82,7 +88,9 @@ class Comments extends ActiveRecord{
         $comment->created_at       = 1;
         $comment->updated_at       = 1;
 
-        return  $comment->save();
+        return  $comment->save(true,['text','post_id','users_id',
+                                                'date_of_creation','created_at',
+                                                    'updated_at']);
     }
 
 
